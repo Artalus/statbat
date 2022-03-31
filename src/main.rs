@@ -47,7 +47,7 @@ struct Cli {
 }
 
 fn read_cpu() -> String {
-    let file = PathBuf::from("/proc/loadavg");
+    let file: PathBuf = ["/", "proc", "loadavg"].iter().collect();
     return std::fs::read_to_string(&file)
         .unwrap_or_else(|e| panic!("could not read {:?}: {}", &file, e))
         .split(" ")
@@ -57,9 +57,7 @@ fn read_cpu() -> String {
 }
 
 fn read_capacity(battery_dir: &PathBuf) -> String {
-    let mut file = PathBuf::with_capacity(2);
-    file.push(battery_dir);
-    file.push("capacity");
+    let file: PathBuf = [battery_dir, &PathBuf::from("capacity")].iter().collect();
     return std::fs::read_to_string(&file)
         .unwrap_or_else(|e| panic!("could not read {:?}: {}", &file, e))
         .trim()
@@ -67,9 +65,7 @@ fn read_capacity(battery_dir: &PathBuf) -> String {
 }
 
 fn read_status(battery_dir: &PathBuf) -> String {
-    let mut file = PathBuf::with_capacity(2);
-    file.push(battery_dir);
-    file.push("status");
+    let file: PathBuf = [battery_dir, &PathBuf::from("status")].iter().collect();
     return std::fs::read_to_string(&file)
         .unwrap_or_else(|e| panic!("could not read {:?}: {}", &file, e))
         .trim()
