@@ -1,0 +1,10 @@
+[Unit]
+Description=Logs battery statistics to file
+Wants=statbat.timer
+
+[Service]
+Type=oneshot
+ExecStart=/home/artalus/bin/statbat-log
+
+[Install]
+WantedBy=multi-user.target

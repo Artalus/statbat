@@ -1,0 +1,9 @@
+[Unit]
+Requires=statbat.service
+
+[Timer]
+Unit=statbat.service
+OnCalendar=*-*-* *:*:00
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,12 @@
+#!/bin/bash
+set -ex
+
+LOG=~/statbat.csv
+MAXLINES=$((2 * 24 * 60))
+if [[ -f $LOG ]]
+then
+	tail -$MAXLINES $LOG > $LOG.tmp
+fi
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+"$SCRIPT_DIR/statbat" >> $LOG.tmp
+mv $LOG.tmp $LOG
