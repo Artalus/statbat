@@ -47,9 +47,9 @@ struct Cli {
 }
 
 fn read_cpu() -> String {
-    let loadavg = PathBuf::from("/proc/loadavg");
-    return std::fs::read_to_string(loadavg)
-        .expect("could not read file")
+    let file = PathBuf::from("/proc/loadavg");
+    return std::fs::read_to_string(&file)
+        .unwrap_or_else(|e| panic!("could not read {:?}: {}", &file, e))
         .split(" ")
         .nth(0)
         .expect("failed to split file contents")
@@ -57,21 +57,21 @@ fn read_cpu() -> String {
 }
 
 fn read_capacity(battery_dir: &PathBuf) -> String {
-    let mut capacity = PathBuf::with_capacity(2);
-    capacity.push(battery_dir);
-    capacity.push("capacity");
-    return std::fs::read_to_string(capacity)
-        .expect("could not read file")
+    let mut file = PathBuf::with_capacity(2);
+    file.push(battery_dir);
+    file.push("capacity");
+    return std::fs::read_to_string(&file)
+        .unwrap_or_else(|e| panic!("could not read {:?}: {}", &file, e))
         .trim()
         .to_owned();
 }
 
 fn read_status(battery_dir: &PathBuf) -> String {
-    let mut status = PathBuf::with_capacity(2);
-    status.push(battery_dir);
-    status.push("status");
-    return std::fs::read_to_string(status)
-        .expect("could not read file")
+    let mut file = PathBuf::with_capacity(2);
+    file.push(battery_dir);
+    file.push("status");
+    return std::fs::read_to_string(&file)
+        .unwrap_or_else(|e| panic!("could not read {:?}: {}", &file, e))
         .trim()
         .to_owned();
 }
