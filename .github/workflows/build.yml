@@ -1,3 +1,0 @@
-- apt install rustup
-- rustup default stable
-- cargo build --release
