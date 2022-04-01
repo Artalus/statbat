@@ -57,7 +57,7 @@ fn read_cpu() -> String {
     return read_file_or_die(PathBuf::from_iter(["/", "proc", "loadavg"].iter()));
 }
 
-fn parse_cpu(s: &String) -> String {
+fn parse_cpu(s: &str) -> String {
     return s
         .split(" ")
         .nth(0)
@@ -114,7 +114,7 @@ mod tests {
     #[test]
     fn test_parse_cpu() {
         assert_eq!(
-            parse_cpu(&"1.45 0.97 0.82 2/1297 160474".to_owned()),
+            parse_cpu("1.45 0.97 0.82 2/1297 160474"),
             "1.45"
         );
     }
