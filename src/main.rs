@@ -46,10 +46,19 @@ struct Cli {
     power: bool,
 }
 
-fn read_cpu() -> String {
-    let file: PathBuf = ["/", "proc", "loadavg"].iter().collect();
+fn read_file_or_die(file: PathBuf) -> String {
     return std::fs::read_to_string(&file)
         .unwrap_or_else(|e| panic!("could not read {:?}: {}", &file, e))
+        .trim()
+        .to_string()
+}
+
+fn read_cpu() -> String {
+    return read_file_or_die(PathBuf::from_iter(["/", "proc", "loadavg"].iter()));
+}
+
+fn parse_cpu(s: &String) -> String {
+    return s
         .split(" ")
         .nth(0)
         .expect("failed to split file contents")
@@ -57,19 +66,11 @@ fn read_cpu() -> String {
 }
 
 fn read_capacity(battery_dir: &PathBuf) -> String {
-    let file: PathBuf = [battery_dir, &PathBuf::from("capacity")].iter().collect();
-    return std::fs::read_to_string(&file)
-        .unwrap_or_else(|e| panic!("could not read {:?}: {}", &file, e))
-        .trim()
-        .to_owned();
+    return read_file_or_die(PathBuf::from_iter([battery_dir, &PathBuf::from("capacity")].iter()));
 }
 
 fn read_status(battery_dir: &PathBuf) -> String {
-    let file: PathBuf = [battery_dir, &PathBuf::from("status")].iter().collect();
-    return std::fs::read_to_string(&file)
-        .unwrap_or_else(|e| panic!("could not read {:?}: {}", &file, e))
-        .trim()
-        .to_owned();
+    return read_file_or_die(PathBuf::from_iter([battery_dir, &PathBuf::from("status")].iter()));
 }
 
 fn get_date() -> String {
@@ -101,8 +102,20 @@ fn main() {
         format_output(
             &get_date(),
             &read_capacity(&args.battery_dir),
-            &read_cpu(),
+            &parse_cpu(&read_cpu()),
             &read_status(&args.battery_dir)
         )
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn test_parse_cpu() {
+        assert_eq!(
+            parse_cpu(&"1.45 0.97 0.82 2/1297 160474".to_owned()),
+            "1.45"
+        );
+    }
 }
