@@ -6,6 +6,7 @@ use chrono::{Datelike, Timelike, Utc};
 mod args;
 mod fileworks;
 use fileworks::*;
+mod csv;
 
 fn get_date() -> String {
     let now = Utc::now();
@@ -29,14 +30,6 @@ fn format_output(
     return format!("{datetime},{capacity},{cpu},{status}\n")
 }
 
-fn read_csv_trimmed(filename: &PathBuf, max_lines: usize) -> String {
-    return "".to_string();
-}
-
-fn write_csv(filename: &PathBuf, content: &str) {
-
-}
-
 fn main() {
     let args = args::Cli::parse();
     let csv_string = format_output(
@@ -48,7 +41,7 @@ fn main() {
     if args.print {
         println!("{}", csv_string)
     }
-    let mut csv = read_csv_trimmed(&args.log_path, args.log_max_lines);
-    csv.push_str(&csv_string);
-    write_csv(&args.log_path, &csv);
+    let mut csv = csv::read_trimmed(&args.log_path, args.log_max_lines);
+    csv.push(csv_string);
+    csv::write(&args.log_path, csv);
 }
