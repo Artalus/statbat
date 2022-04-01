@@ -24,7 +24,7 @@ pub struct Cli {
     pub log_path: PathBuf,
     /// maximum lines sto store in file before truncating
     #[clap(short('m'), long, default_value_t=24*60*2)]
-    pub log_max_lines: u32,
+    pub log_max_lines: usize,
     /// /sys/class file to read info from
     #[clap(parse(from_os_str), short, long, default_value="/sys/class/power_supply/BAT0")]
     pub battery_dir: std::path::PathBuf,
@@ -43,4 +43,7 @@ pub struct Cli {
     /// read power value
     #[clap(short, long, parse(try_from_str = true_or_false), default_value="no", value_names=&["yes/no"])]
     pub power: bool,
+    /// print csv line to stdout
+    #[clap(long)]
+    pub print: bool,
 }
