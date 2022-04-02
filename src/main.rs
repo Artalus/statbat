@@ -1,6 +1,6 @@
 use clap::Parser;
 
-use chrono::{Datelike, Timelike, Utc};
+use chrono::{Datelike, Timelike, Local};
 
 mod args;
 mod fileworks;
@@ -8,7 +8,7 @@ use fileworks::*;
 mod csv;
 
 fn get_date() -> String {
-    let now = Utc::now();
+    let now = Local::now().naive_local();
     return format!(
         "{}.{:02}.{:02} {:02}:{:02}:{:02}",
         now.year(),

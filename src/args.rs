@@ -23,7 +23,7 @@ pub struct Cli {
     #[clap(parse(from_os_str), short('f'), long, default_value="statbat.csv")]
     pub log_path: PathBuf,
     /// maximum lines sto store in file before truncating
-    #[clap(short('m'), long, default_value_t=24*60*2)]
+    #[clap(short('m'), long, default_value_t=2*24*60/*minutes*/)]
     pub log_max_lines: usize,
     /// /sys/class file to read info from
     #[clap(parse(from_os_str), short, long, default_value="/sys/class/power_supply/BAT0")]
