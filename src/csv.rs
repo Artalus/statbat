@@ -1,8 +1,7 @@
 
 use std::path::Path;
-use std::path::PathBuf;
 use std::fs::*;
-use std::io::{prelude::*, BufReader, BufWriter};
+use std::io::{prelude::*, BufReader};
 
 fn prepend(v: &mut Vec<String>, x: &str) {
     let slice = &[x.to_string()];
@@ -17,7 +16,7 @@ fn trim_csv(lines: &mut Vec<String>, max_lines: usize) {
     let header = lines
         .drain(0..=0)
         .next()
-        .expect("no header in csv");
+        .expect("no lines in csv");
     if !header.starts_with("# ") {
         panic!("csv should start with a #header!")
     }
@@ -29,7 +28,7 @@ fn trim_csv(lines: &mut Vec<String>, max_lines: usize) {
 
 pub fn read_trimmed<P>(filename: &P, max_lines: usize) -> Vec<String>
 where
-    P: AsRef<Path> // to pass both "literals" and path_varss
+    P: AsRef<Path> // to pass both "literals" and path_vars
 {
     // TODO: will crash on first time launch when no file present
     let file = File::open(filename)
@@ -44,7 +43,22 @@ where
     return lines;
 }
 
-pub fn write(filename: &PathBuf, content: Vec<String>) {
+pub fn write<P>(filename: &P, lines: Vec<String>)
+where
+    P: AsRef<Path> // to pass both "literals" and path_vars
+{
+    let file = File::create(filename)
+        .unwrap_or_else(|e| panic!("could not create file {:?}: {e}", filename.as_ref()));
+    for ln in &lines {
+        let wrt = writeln!(&file, "{}", &ln);
+        match wrt {
+            Ok(_) => {}
+            Err(e) => {
+                println!("Failed to write to file: {}", &e);
+                break;
+            }
+        }
+    }
 }
 
 #[cfg(test)]

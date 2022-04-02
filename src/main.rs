@@ -1,4 +1,3 @@
-use std::path::PathBuf;
 use clap::Parser;
 
 use chrono::{Datelike, Timelike, Utc};
@@ -27,7 +26,7 @@ fn format_output(
     cpu: &str,
     status: &str
 ) -> String {
-    return format!("{datetime},{capacity},{cpu},{status}\n")
+    return format!("{datetime},{capacity},{cpu},{status}")
 }
 
 fn main() {
