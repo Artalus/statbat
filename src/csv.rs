@@ -1,7 +1,6 @@
-
-use std::path::Path;
 use std::fs::*;
 use std::io::{prelude::*, BufReader};
+use std::path::Path;
 
 fn prepend(v: &mut Vec<String>, x: &str) {
     let slice = &[x.to_string()];
@@ -11,7 +10,7 @@ fn prepend(v: &mut Vec<String>, x: &str) {
 fn trim_csv(lines: &mut Vec<String>, max_lines: usize) {
     let length = lines.len();
     if length <= max_lines {
-        return
+        return;
     }
     let header = lines
         .drain(0..=0)
@@ -30,9 +29,11 @@ pub fn read_trimmed<P>(filename: &P, max_lines: usize) -> Vec<String>
 where
     P: AsRef<Path> // to pass both "literals" and path_vars
 {
-    // TODO: will crash on first time launch when no file present
+    if !filename.as_ref().exists() {
+        return vec!["# auto generated header".to_owned()];
+    }
     let file = File::open(filename)
-        .unwrap_or_else(|e| panic!("no such file: {:?}: {e}", filename.as_ref()));
+        .unwrap_or_else(|e| panic!("Failed to open {:?}: {e}", filename.as_ref()));
     let mut lines: Vec<String> = BufReader::new(file)
         .lines()
         .map(
